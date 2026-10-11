@@ -1,0 +1,28 @@
+# Dog Glow Studio
+
+> Peluquería canina y boutique especializada en San Luis de Sabinillas, Manilva (Málaga, España). Spa, aromaterapia, ozonoterapia y tratamientos para Pomeranias, caniches y alopecia. Citas bajo reserva.
+
+Dog Glow Studio ofrece peluquería canina y boutique especializada. Idioma del sitio: español (España). Sitio de una sola página con secciones ancla.
+
+Servicios principales:
+- Peluquería canina
+- Spa y aromaterapia
+- Ozonoterapia
+- Tratamientos especiales (coadyuvantes a la alopecia; especialistas en Pomeranias y caniches)
+
+Datos de contacto útiles para agentes:
+- Teléfono / WhatsApp: +34 617 941 049
+- WhatsApp: https://wa.me/34617941049
+- Ubicación: San Luis de Sabinillas, Manilva, Málaga, Spain
+- Horario: lunes–sábado, 09:00–19:00, bajo cita
+- Web: https://www.dogglowstudio.com/
+
+## Docs
+
+- [Página principal (Markdown)](https://www.dogglowstudio.com/index.md): Contenido completo de la web en Markdown, generado desde index.html
+- [Página principal (HTML)](https://www.dogglowstudio.com/): Versión humana de la web
+
+## Optional
+
+- [Sitemap](https://www.dogglowstudio.com/sitemap.xml): URLs canónicas indexables
+- [robots.txt](https://www.dogglowstudio.com/robots.txt): Política de rastreo

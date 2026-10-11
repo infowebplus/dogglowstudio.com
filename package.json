@@ -1,0 +1,18 @@
+{
+  "name": "dogglowstudio.com",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Dog Glow Studio — peluquería canina y boutique especializada",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "npx --yes serve src -l 4174",
+    "serve": "npx --yes serve dist -l 4173",
+    "start": "npm run build && npm run serve"
+  },
+  "devDependencies": {
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.39.0"
+  }
+}

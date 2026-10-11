@@ -1,0 +1,71 @@
+{
+  "site": {
+    "whatsappNumber": "34617941049",
+    "whatsappDisplay": "+34 617 941 049",
+    "whatsappMessage": "Hola, me gustaría reservar una cita para mi perro en Dog Glow Studio.",
+    "instagramUrl": "",
+    "mapsUrl": "https://www.google.com/maps?q=San+Luis+de+Sabinillas,+Manilva,+M%C3%A1laga",
+    "canonicalUrl": "https://www.dogglowstudio.com/",
+    "telephone": "+34617941049",
+    "telephoneDisplay": "+34 617 941 049",
+    "priceRange": "€€",
+    "address": {
+      "streetAddress": "",
+      "addressLocality": "San Luis de Sabinillas",
+      "addressRegion": "Málaga",
+      "postalCode": "",
+      "addressCountry": "ES",
+      "_placeholders": {
+        "streetAddress": "PLACEHOLDER — add exact street address when available",
+        "postalCode": "PLACEHOLDER — add postal code (e.g. 29692) when confirmed",
+        "geo": "PLACEHOLDER — add latitude/longitude when confirmed",
+        "sameAs": "PLACEHOLDER — add real Instagram/Facebook profile URLs when available",
+        "servicePrices": "PLACEHOLDER — confirm final prices for spa, ozonoterapia and tratamientos"
+      }
+    },
+    "geo": {
+      "latitude": null,
+      "longitude": null
+    },
+    "sameAs": []
+  },
+  "bookingApi": {
+    "url": "",
+    "key": ""
+  },
+  "calendar": {
+    "calendarId": "primary",
+    "timezone": "Europe/Madrid",
+    "workingDays": [1, 2, 3, 4, 5, 6],
+    "workingHours": {
+      "start": "09:00",
+      "end": "19:00"
+    },
+    "slotStepMinutes": 30,
+    "bufferMinutes": 0,
+    "createEvents": false,
+    "apiKey": ""
+  },
+  "services": {
+    "peluqueria-canina": {
+      "label": "Peluquería canina",
+      "price": 27,
+      "duration": 90
+    },
+    "spa-aromaterapia": {
+      "label": "Spa y aromaterapia",
+      "price": 30,
+      "duration": 60
+    },
+    "ozonoterapia": {
+      "label": "Ozonoterapia",
+      "price": 35,
+      "duration": 45
+    },
+    "tratamientos-especiales": {
+      "label": "Tratamientos especiales",
+      "price": 25,
+      "duration": 60
+    }
+  }
+}
