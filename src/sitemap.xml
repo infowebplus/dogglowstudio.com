@@ -5,4 +5,29 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://www.dogglowstudio.com/servicios</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dogglowstudio.com/reserva</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dogglowstudio.com/sobre-nosotros</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dogglowstudio.com/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.dogglowstudio.com/contacto</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

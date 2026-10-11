@@ -48,7 +48,7 @@ const USED_IMAGES = [
   "assets/img/studio/bano-profesional-perro.webp"
 ];
 
-const STATIC_ROOT_FILES = ["robots.txt", "sitemap.xml", "llms.txt"];
+const STATIC_ROOT_FILES = ["robots.txt", "sitemap.xml", "llms.txt", "_redirects"];
 const DEFAULT_SITE_ORIGIN = "https://dogglowstudio.infowebplus.com";
 
 function die(msg) {
@@ -404,8 +404,8 @@ function patchHtml(cfg) {
 
   if (!html.includes("assets/js/site-config.js")) {
     html = html.replace(
-      '<script src="assets/js/main.js"></script>',
-      '<script src="assets/js/site-config.js"></script>\n<script src="assets/js/main.js"></script>'
+      /<script src="\/?assets\/js\/main\.js"><\/script>/,
+      '<script src="/assets/js/site-config.js"></script>\n<script src="/assets/js/main.js"></script>'
     );
   }
 
@@ -469,12 +469,12 @@ async function writeDist(htmlSrc, cfg) {
   // HTML — point to bundled assets, rewrite site origin, then minify
   let html = applySiteOrigin(htmlSrc, origin)
     .replace(
-      /<link rel="stylesheet" href="assets\/css\/style\.css">/,
-      '<link rel="stylesheet" href="assets/css/style.css">'
+      /<link rel="stylesheet" href="\/?assets\/css\/style\.css">/,
+      '<link rel="stylesheet" href="/assets/css/style.css">'
     )
     .replace(
-      /<script src="assets\/js\/site-config\.js"><\/script>\s*<script src="assets\/js\/main\.js"><\/script>/,
-      '<script src="assets/js/app.js" defer></script>'
+      /<script src="\/?assets\/js\/site-config\.js"><\/script>\s*<script src="\/?assets\/js\/main\.js"><\/script>/,
+      '<script src="/assets/js/app.js" defer></script>'
     );
 
   html = await minifyHtml(html, {

@@ -4,3 +4,44 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Pretty section URLs → same one-page (index.html), JS scrolls to the section
+[[redirects]]
+  from = "/inicio"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/servicios"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/reserva"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/sobre-nosotros"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/estudio"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/faq"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/preguntas"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/contacto"
+  to = "/index.html"
+  status = 200

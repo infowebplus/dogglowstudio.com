@@ -54,6 +54,142 @@
   }
 
   /* ---------------------------------------------------------------------
+   * Pretty section routes (/contacto) on the same one-page
+   * ------------------------------------------------------------------- */
+  var SECTION_ROUTES = {
+    "/": "inicio",
+    "/inicio": "inicio",
+    "/servicios": "servicios",
+    "/reserva": "reserva",
+    "/sobre-nosotros": "estudio",
+    "/estudio": "estudio",
+    "/faq": "faq",
+    "/preguntas": "faq",
+    "/contacto": "contacto"
+  };
+
+  var SECTION_PATHS = {
+    inicio: "/",
+    servicios: "/servicios",
+    reserva: "/reserva",
+    estudio: "/sobre-nosotros",
+    faq: "/faq",
+    contacto: "/contacto"
+  };
+
+  function normalizePath(pathname) {
+    if (!pathname) return "/";
+    var path = pathname.replace(/\/+$/, "");
+    return path || "/";
+  }
+
+  function sectionFromLocation() {
+    var path = normalizePath(window.location.pathname);
+    if (SECTION_ROUTES[path]) return SECTION_ROUTES[path];
+    var hash = (window.location.hash || "").replace(/^#/, "");
+    if (hash && document.getElementById(hash)) return hash;
+    return null;
+  }
+
+  function sectionTop(id) {
+    var el = document.getElementById(id);
+    if (!el) return null;
+    var header = document.getElementById("siteHeader");
+    var offset = header ? header.offsetHeight + 12 : 80;
+    return Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+  }
+
+  // CSS `html { scroll-behavior: smooth }` makes behavior:"auto" still animate.
+  // Jump instantly so nav does not fly through every section.
+  function jumpToY(y) {
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(0, y);
+    root.style.scrollBehavior = prev;
+  }
+
+  function jumpToSection(id) {
+    if (id === "inicio") {
+      jumpToY(0);
+      return;
+    }
+    var top = sectionTop(id);
+    if (top == null) return;
+    jumpToY(top);
+  }
+
+  function pathForSection(id) {
+    return SECTION_PATHS[id] || "/";
+  }
+
+  function goToSection(section, path) {
+    if (normalizePath(window.location.pathname) !== normalizePath(path)) {
+      history.pushState({ section: section }, "", path);
+    } else {
+      history.replaceState({ section: section }, "", path);
+    }
+    jumpToSection(section);
+  }
+
+  function initSectionRoutes() {
+    // Open /contacto (or legacy #contacto) on the same page
+    var initial = sectionFromLocation();
+    if (initial && initial !== "inicio") {
+      var applyInitial = function () {
+        jumpToSection(initial);
+      };
+      applyInitial();
+      // Re-apply after layout/fonts/images settle
+      setTimeout(applyInitial, 50);
+      setTimeout(applyInitial, 300);
+      window.addEventListener("load", applyInitial);
+    }
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        var link = event.target.closest("a[href]");
+        if (!link) return;
+        if (event.defaultPrevented || event.button !== 0) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+        var href = link.getAttribute("href");
+        if (!href || (href.charAt(0) === "#" && href.length === 1)) return;
+
+        var url;
+        try {
+          url = new URL(href, window.location.origin);
+        } catch (err) {
+          return;
+        }
+        if (url.origin !== window.location.origin) return;
+
+        var path = normalizePath(url.pathname);
+        var section = SECTION_ROUTES[path];
+
+        // Legacy hash links still work
+        if (!section && href.charAt(0) === "#") {
+          section = href.slice(1);
+          if (!document.getElementById(section)) return;
+          event.preventDefault();
+          goToSection(section, pathForSection(section));
+          return;
+        }
+
+        if (!section) return;
+        event.preventDefault();
+        goToSection(section, path === "/" ? "/" : path);
+      },
+      true
+    );
+
+    window.addEventListener("popstate", function () {
+      jumpToSection(sectionFromLocation() || "inicio");
+    });
+  }
+
+  /* ---------------------------------------------------------------------
    * Sticky header
    * ------------------------------------------------------------------- */
   function initHeader() {
@@ -100,13 +236,13 @@
     if (!nav) return;
 
     var links = Array.prototype.slice.call(
-      nav.querySelectorAll('a[href^="#"]')
+      nav.querySelectorAll("a[data-section]")
     );
     if (!links.length) return;
 
     var sections = links
       .map(function (link) {
-        var id = link.getAttribute("href").slice(1);
+        var id = link.getAttribute("data-section");
         var el = document.getElementById(id);
         return el ? { id: id, el: el, link: link } : null;
       })
@@ -116,30 +252,33 @@
 
     function setActive(id) {
       links.forEach(function (link) {
-        var on = link.getAttribute("href") === "#" + id;
+        var on = link.getAttribute("data-section") === id;
         link.classList.toggle("is-active", on);
         if (on) link.setAttribute("aria-current", "true");
         else link.removeAttribute("aria-current");
       });
+      // URL changes only on click / back-forward — not while scrolling
     }
 
     function update() {
-      var offset = 120;
-      var y = window.scrollY + offset;
+      var header = document.getElementById("siteHeader");
+      var marker = (header ? header.offsetHeight : 80) + 28;
       var ordered = sections.slice().sort(function (a, b) {
         return a.el.offsetTop - b.el.offsetTop;
       });
       var current = ordered[0].id;
 
       for (var i = 0; i < ordered.length; i++) {
-        if (ordered[i].el.offsetTop <= y) current = ordered[i].id;
+        if (ordered[i].el.getBoundingClientRect().top <= marker) {
+          current = ordered[i].id;
+        }
       }
 
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 48
       ) {
-        current = "contacto";
+        current = ordered[ordered.length - 1].id;
       }
 
       setActive(current);
@@ -655,6 +794,7 @@
     wireContactLinks();
     initHeader();
     initNav();
+    initSectionRoutes();
     initNavActive();
     initReveal();
     initBooking();

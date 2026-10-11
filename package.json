@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "dev": "npx --yes serve src -l 4174",
-    "serve": "npx --yes serve dist -l 4173",
+    "dev": "npx --yes serve src -l 4174 -s",
+    "serve": "npx --yes serve dist -l 4173 -s",
     "start": "npm run build && npm run serve"
   },
   "devDependencies": {
