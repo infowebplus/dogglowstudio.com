@@ -32,6 +32,7 @@ const USED_IMAGES = [
   "assets/img/logo.svg",
   "assets/img/logo-name.svg",
   "assets/img/og-dog-glow-studio.jpg",
+  "assets/img/og-share.jpg",
   "assets/img/peluqueria-canina-manilva-hero.jpg",
   "assets/img/peluqueria-canina-manilva-hero.webp",
   "assets/img/estudio-peluqueria-canina-manilva.jpg",
