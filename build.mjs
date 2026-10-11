@@ -49,11 +49,25 @@ const USED_IMAGES = [
 ];
 
 const STATIC_ROOT_FILES = ["robots.txt", "sitemap.xml", "llms.txt"];
-const SITE_ORIGIN = "https://www.dogglowstudio.com";
+const DEFAULT_SITE_ORIGIN = "https://dogglowstudio.infowebplus.com";
 
 function die(msg) {
   console.error("build failed:", msg);
   process.exit(1);
+}
+
+/** Canonical site origin from config.json (no trailing slash). */
+function siteOrigin(cfg) {
+  const raw =
+    (cfg && cfg.site && cfg.site.canonicalUrl) || DEFAULT_SITE_ORIGIN;
+  return String(raw).trim().replace(/\/+$/, "");
+}
+
+/** Rewrite absolute SEO URLs so OG/WhatsApp preview hits a reachable host. */
+function applySiteOrigin(text, origin) {
+  return String(text)
+    .replace(/https:\/\/www\.dogglowstudio\.com/g, origin)
+    .replace(/https:\/\/dogglowstudio\.infowebplus\.com/g, origin);
 }
 
 function decodeEntities(text) {
@@ -105,6 +119,7 @@ function buildIndexMarkdown(html, cfg) {
   const site = (cfg && cfg.site) || {};
   const services = (cfg && cfg.services) || {};
   const cal = (cfg && cfg.calendar) || {};
+  const origin = siteOrigin(cfg);
   const main = extractMain(html);
   const lines = [];
 
@@ -118,7 +133,7 @@ function buildIndexMarkdown(html, cfg) {
   lines.push(`> ${description}`);
   lines.push("");
   lines.push(
-    `_Documento Markdown generado automáticamente desde \`index.html\` para agentes de IA. Fuente canónica: ${SITE_ORIGIN}/_`
+    `_Documento Markdown generado automáticamente desde \`index.html\` para agentes de IA. Fuente canónica: ${origin}/_`
   );
   lines.push("");
 
@@ -149,8 +164,8 @@ function buildIndexMarkdown(html, cfg) {
       `- **Horario:** lunes–sábado, ${hours.start}–${hours.end}, bajo cita`
     );
   }
-  lines.push(`- **Web:** ${SITE_ORIGIN}/`);
-  lines.push(`- **llms.txt:** ${SITE_ORIGIN}/llms.txt`);
+  lines.push(`- **Web:** ${origin}/`);
+  lines.push(`- **llms.txt:** ${origin}/llms.txt`);
   lines.push("");
 
   // Prefer content outside the booking form UI chrome
@@ -220,12 +235,12 @@ function buildIndexMarkdown(html, cfg) {
 
   lines.push("## Enlaces útiles");
   lines.push("");
-  lines.push(`- [Inicio](${SITE_ORIGIN}/#inicio)`);
-  lines.push(`- [Servicios](${SITE_ORIGIN}/#servicios)`);
-  lines.push(`- [Reservar cita](${SITE_ORIGIN}/#reserva)`);
-  lines.push(`- [Sobre nosotros](${SITE_ORIGIN}/#estudio)`);
-  lines.push(`- [FAQ](${SITE_ORIGIN}/#faq)`);
-  lines.push(`- [Contacto](${SITE_ORIGIN}/#contacto)`);
+  lines.push(`- [Inicio](${origin}/#inicio)`);
+  lines.push(`- [Servicios](${origin}/#servicios)`);
+  lines.push(`- [Reservar cita](${origin}/#reserva)`);
+  lines.push(`- [Sobre nosotros](${origin}/#estudio)`);
+  lines.push(`- [FAQ](${origin}/#faq)`);
+  lines.push(`- [Contacto](${origin}/#contacto)`);
   lines.push("");
 
   // Normalize excessive blank lines
@@ -409,15 +424,20 @@ async function writeDist(htmlSrc, cfg) {
     copyFile(from, path.join(dist, rel));
   }
 
-  // Root SEO / AI files
+  const origin = siteOrigin(cfg);
+
+  // Root SEO / AI files (rewrite absolute URLs to live origin)
   for (const name of STATIC_ROOT_FILES) {
     const from = path.join(src, name);
     if (!fs.existsSync(from)) die("missing: src/" + name);
-    copyFile(from, path.join(dist, name));
+    const body = applySiteOrigin(fs.readFileSync(from, "utf8"), origin);
+    const dest = path.join(dist, name);
+    ensureDir(dest);
+    fs.writeFileSync(dest, body, "utf8");
   }
 
   // AI markdown mirror of index.html (llmstxt.org: page.md)
-  const indexMd = buildIndexMarkdown(htmlSrc, cfg);
+  const indexMd = applySiteOrigin(buildIndexMarkdown(htmlSrc, cfg), origin);
   fs.writeFileSync(path.join(dist, "index.md"), indexMd, "utf8");
   // Alias short name some tools look for
   copyFile(path.join(dist, "llms.txt"), path.join(dist, "llm.txt"));
@@ -446,8 +466,8 @@ async function writeDist(htmlSrc, cfg) {
   ensureDir(distJs);
   fs.writeFileSync(distJs, jsOut.code, "utf8");
 
-  // HTML — point to bundled assets, then minify
-  let html = htmlSrc
+  // HTML — point to bundled assets, rewrite site origin, then minify
+  let html = applySiteOrigin(htmlSrc, origin)
     .replace(
       /<link rel="stylesheet" href="assets\/css\/style\.css">/,
       '<link rel="stylesheet" href="assets/css/style.css">'
@@ -496,6 +516,7 @@ async function main() {
   console.log("updated", path.relative(root, htmlPath));
 
   await writeDist(html, cfg);
+  console.log("site origin:", siteOrigin(cfg));
   console.log("wrote dist/llms.txt + dist/index.md (AI)");
   console.log("build ok → dist/  (npm run serve)");
 }
