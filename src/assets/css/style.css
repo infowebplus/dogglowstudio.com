@@ -550,12 +550,22 @@ html.no-js .reveal {
   background: var(--cream);
   color: var(--ink);
   border-radius: var(--radius-lg);
-  padding: 48px 44px;
+  padding: 38px 30px;
 }
 
 .booking-card h2 { font-size: clamp(32px, 3.4vw, 42px); margin-bottom: 10px; }
 
-.booking-intro { color: var(--muted-ink); font-size: 14px; line-height: 1.7; max-width: 440px; margin-bottom: 36px; }
+.booking-intro { color: var(--muted-ink); font-size: 14px; line-height: 1.7; margin-bottom: 36px; }
+
+.booking-card > .booking-intro {
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .booking-card > .booking-intro {
+    white-space: normal;
+  }
+}
 
 .stepper {
   display: flex;

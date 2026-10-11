@@ -292,6 +292,23 @@
   /* ---------------------------------------------------------------------
    * Reveal-on-scroll
    * ------------------------------------------------------------------- */
+  /* ---------------------------------------------------------------------
+   * FAQ accordion — only one open at a time
+   * ------------------------------------------------------------------- */
+  function initFaq() {
+    var items = document.querySelectorAll(".faq-list .faq-item");
+    if (!items.length) return;
+
+    items.forEach(function (item) {
+      item.addEventListener("toggle", function () {
+        if (!item.open) return;
+        items.forEach(function (other) {
+          if (other !== item) other.open = false;
+        });
+      });
+    });
+  }
+
   function initReveal() {
     var items = document.querySelectorAll(".reveal");
     if (!items.length) return;
@@ -377,7 +394,7 @@
         var days = cfg.workingDays.slice().sort(function (a, b) { return a - b; });
         var labels = days.map(function (d) { return DAY_NAMES[d]; });
         var hours = cfg.workingHours
-          ? cfg.workingHours.start + "–" + cfg.workingHours.end
+          ? cfg.workingHours.start + "-" + cfg.workingHours.end
           : "";
         fechaHint.textContent = "Abierto: " + labels.join(", ") +
           (hours ? " · " + hours : "") + ".";
@@ -510,7 +527,7 @@
         timeGrid.classList.remove("is-loading");
         if (result.closed) {
           renderSlots([]);
-          setTimeStatus("Cerrado este día — elige otra fecha.", true);
+          setTimeStatus("Cerrado este día, elige otra fecha.", true);
           return;
         }
         renderSlots(result.slots || []);
@@ -529,7 +546,7 @@
         })
         .catch(function () {
           done(localFallbackSlots(dateStr, duration));
-          setTimeStatus("No se pudo consultar el calendario — mostrando horario base.", true);
+          setTimeStatus("No se pudo consultar el calendario, mostrando horario base.", true);
         });
     }
 
@@ -596,7 +613,7 @@
           valid = false;
         } else if (!isWorkingDay(fechaInput.value)) {
           fechaField.classList.add("has-error");
-          fechaError.textContent = "Ese día estamos cerrados — elige otro.";
+          fechaError.textContent = "Ese día estamos cerrados, elige otro.";
           valid = false;
         }
 
@@ -796,6 +813,7 @@
     initNav();
     initSectionRoutes();
     initNavActive();
+    initFaq();
     initReveal();
     initBooking();
     initYear();
